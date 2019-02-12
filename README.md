@@ -9,3 +9,9 @@ For  automaticly   install EFI, put  your  EFI dictionary into  your  Desktop, a
 
 Enjoy!
 
+
+
+# Credits
+
+ @hieveplp for  `mount_efi.sh` 
+
