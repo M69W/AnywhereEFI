@@ -23,22 +23,23 @@ Please choose an option：
 
 EOF
 
-read -p "Input your choice[1~2]: " input
-case $input in
-1) instinit
-;;
-2) end
-;;
-*)
-echo "Your input is incorrect, please try again. Any key for return."
-choose
-esac
+    read -p "Input your choice[1~2]: " input
+    case $input in
+    1) instinit
+    ;;
+    2) end
+    ;;
+    *)
+
+    echo "Your input is incorrect, please try again. Any key for return."
+    choose
+    esac
 }
 
 #Install Init Module
 function instinit()
 {
-clear
+    clear
 cat << EOF
 Auto Install needs：
 1、UEFI mode
@@ -47,56 +48,75 @@ Auto Install needs：
 4、mount_efi.sh with it
 EOF
 
-read -p "If you can ensure all of these are done，please enter y to continue, or any other key to return！！！！" input
-if [[ $input == y ]];then
-install
-else
-start
-fi
+    read -p "If you can ensure all of these are done，please enter y to continue, or any other key to return！！！！" input
+    if [[ $input == y ]];then
+        install
+    else
+        start
+    fi
 }
 
 
 #Install Module
 function install()
 {
+#detect the  EFI mount script
+    if [[ -f $efidir/mount.efi.sh ]];then
+        read -p "mount_efi.sh is lost! Any key to return。"
+        start
+    fi
+#mount efi partition，script  written by hieplpvip
+    echo "Mounting EFI..."
+    efidir=`$origindir/mount_efi.sh`
 
-if [[ -f $efidir/mount.efi.sh ]];then
-read -p "mount_efi.sh is lost! Any key to return。"
-start
-fi
+#detect the  windows  EFI files，will  set  haswin to yes  if  has windows EFI.
+    if [[ -d $efidir/Microsoft ]];then
+        haswin="yes"
+    fi
 
-echo "Mounting EFI..."
-efidir=`$origindir/mount_efi.sh`
-echo "Copying original EFI to /desktop/EFIREC..."
+#backup original EFI files
+    echo "Copying original EFI to /desktop/EFIREC..."
+    cp -rf $efidir /Users/$USER/Desktop/EFIREC
+    if [[ ! -d /Users/$USER/Desktop/EFIREC ]];then
+        read -p "Backup EFI file failed，and install will continue without  backup ! enter y to continue, or any other key to return." input
+        if [[ ！$input == y ]];then
+            start
+        fi
+        else
+            echo "Backup EFI succeed. Installing……"
+    fi
 
-cp -rf $efidir /Users/$USER/Desktop/EFIREC
-if [[ ! -d /Users/$USER/Desktop/EFIREC ]];then
-read -p "Backup EFI file failed，and install will continue without  backup ! enter y to continue, or any other key to return." input
+#detect install file
+    if [[ ! -d $makedir ]];then
+        read -p "EFI dictionary for  install is not found, please put it into desktop! Any key to return."
+        start
+    fi
 
-if [[ ！$input == y ]];then
-start
-fi
+#install
+    rm -rf $efidir/EFI
+    cp -rf $makedir $efidir
 
-else
-echo "Backup EFI succeed. Installing……"
-fi
+#restore windows EFI files if needed
+    if [[ $haswin == yes ]];then
+        echo "Restoring your Windows EFI files to EFI partition..."
+        cp -rf /Users/$USER/Desktop/EFIREC/EFI/Microsoft $efidir/EFI
+        if [[ -d $efidir/EFI/Microsoft ]];then
+            rm -rf $makedir
+            echo "Restoring Windows EFI succeed."
+        else
+            read -p "Restoring Windows EFI failed. Any key to return."
+            start
+        fi
+    fi
 
-if [[ ! -d $makedir ]];then
-read -p "EFI dictionary for  install is not found, please put it into desktop! Any key to return."
-start
-fi
-
-rm -rf $efidir/EFI
-cp -rf $makedir $efidir
-
-if [[ -d $efidir ]];then
-rm -rf $makedir
-read -p "Auto install succeed, please restart to enjoy! Any key for return."
-start
-else
-read -p "Auto install failed! Any key for return."
-start
-fi
+#finishing the  installation
+    if [[ -d $efidir ]];then
+        rm -rf $makedir
+        read -p "Auto install succeed, please restart to enjoy! Any key for return."
+    else
+        read -p "Auto install failed! Any key for return."
+        fi
+    start
 }
 
 #结束块
