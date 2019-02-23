@@ -1,6 +1,12 @@
 # AnywhereEFI
 
 
+
+[中文版](https://github.com/penghubingzhou/AnywhereEFI/blob/master/README-CN.md)|[English](https://github.com/penghubingzhou/AnywhereEFI/blob/master/README.md)
+
+
+
+
 This script is an EFI tools for  Hackinstosh automatically (esepically for Clover EFI).
 
 
