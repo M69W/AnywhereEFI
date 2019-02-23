@@ -1,13 +1,27 @@
 # AnywhereEFI
-This script is aiming to install EFI for  Hackinstosh automatically(esepically for Clover EFI).
+
+
+This script is an EFI tools for  Hackinstosh automatically (esepically for Clover EFI).
 
 
 
-For  automaticly   install EFI, put  your  EFI dictionary into  your  Desktop, and then  run  it  in  terminal, and it will  install your  new EFI  dictionary automatically.
+
+
+# Features
 
 
 
-Enjoy!
+- Install EFI automatically
+
+- Mount your EFI partition  in  installing
+
+- Update your  Clover EFI  version  autoatically
+
+- And  more in future…...
+
+  
+
+Enjoy it !
 
 
 
@@ -15,3 +29,6 @@ Enjoy!
 
  **@hieplpvip** for  `mount_efi.sh` 
 
+ **@Dids** for  `clover-builder` 
+
+**@PMheart**  for useful help
